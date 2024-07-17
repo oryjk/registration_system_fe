@@ -24,7 +24,29 @@
 /* 透明度 */
 /* 文章场景相关 */
 .container {
+  width: 100%;
+  min-height: 100%;
+}
+.container .fixed-content {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+}
+.container .select-cus {
+  z-index: 999;
+}
+.container .scrollable-content {
+  overflow-y: auto;
+  background-color: white;
+  z-index: 2;
+}
+.container .footer {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  height: 80px;
 }

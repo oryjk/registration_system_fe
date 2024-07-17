@@ -1,1 +1,1 @@
-<view class="container"><uni-title wx:if="{{a}}" u-i="06f87f12-0" bind:__l="__l" u-p="{{a}}"></uni-title></view>
+<view class="container"><view class="fixed-content"><text>历史报名列表</text></view><view class="scrollable-content"><view class="overlay-content"> 暂时没有历史报名信息 </view></view><view class="footer"> 没有更多内容了 <uni-data-select wx:if="{{c}}" class="select-cus" bindchange="{{a}}" u-i="06f87f12-0" bind:__l="__l" bindupdateModelValue="{{b}}" u-p="{{c}}"></uni-data-select></view></view>

@@ -26,16 +26,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-.container .submit-btn {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  left: 0;
-  padding: 10px 0;
-  text-align: center;
+  height: 100%;
 }
 .container .view {
   flex-grow: 0;
@@ -45,20 +36,94 @@
   overflow: auto;
   /* 如果内容超出容器，则显示滚动条 */
 }
-.container .view-20 {
-  height: 20%;
+.container .match-info {
+  background-color: #38404B;
+  position: fixed;
+  top: 0%;
+  height: 30%;
+  width: 100%;
 }
-.container .view-30 {
-  height: 20%;
+.container .match-info .team-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
-.container .view-50 {
-  height: 50%;
+.container .match-info .team-info .team {
+  display: flex;
+  flex-direction: column;
+  color: #eeeeee;
 }
-.container .right-badge {
-  width: 80%;
+.container .match-info .team-info .team .team1-name {
+  -webkit-text-decoration: underline white;
+          text-decoration: underline white;
+  text-decoration-thickness: 20rpx;
+  -webkit-text-decoration-style: solid;
+          text-decoration-style: solid;
+}
+.container .match-info .team-info .team .team2-name {
+  -webkit-text-decoration: underline steelblue;
+          text-decoration: underline steelblue;
+  text-decoration-thickness: 20rpx;
+  -webkit-text-decoration-style: solid;
+          text-decoration-style: solid;
+}
+.container .match-info .addr {
+  margin-top: 25rpx;
+}
+.container .regis-info {
+  margin-top: 50%;
+  margin-bottom: 20%;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  z-index: 2;
+}
+.container .regis-info .user-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.container .regis-info .user-container .image-name-container {
+  display: flex;
+  /* 启用Flexbox */
+  flex-direction: column;
+  /* 使子元素垂直排列，即图片在上，文本在下 */
+  align-items: center;
+  /* 使子元素在交叉轴（此处为水平方向）上居中 */
+  justify-content: center;
+  /* 使子元素在主轴（此处为垂直方向）上居中（如果不需要垂直居中可省略） */
+  margin-right: 3px;
+  /* 示例：使容器水平居中 */
+  width: calc(20% - 3px);
+}
+.container .regis-info .user-container .image-name-container .avatar {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: #eeeeee;
+  margin: 3px;
+}
+.container .regis-info .user-container .image-name-container text {
+  width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 .container .btn-container {
+  /* 占据剩余空间 */
   position: fixed;
-  width: 100%;
   bottom: 0;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 3;
+  /* 使内容向下对齐，紧贴底部 */
+}
+.container .btn-container .submit-btn {
+  margin-top: 10px;
+  width: 100%;
+  left: 0;
+  padding: 10px 0;
+  text-align: center;
 }

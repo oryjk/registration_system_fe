@@ -1,16 +1,22 @@
 <template>
 	<view class="container">
-
+		<uni-data-select v-model="userInfo.positionValue" :localdata="position_info"
+			@change="positionChange"></uni-data-select>
 		<view class="avatar-container">
 			<button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
-				<image class="avatar" :src="userInfo.avatarUrl" mode="aspectFit"></image>
+				<image class="avatar" :src="userInfo.avatarValue" mode="aspectFit"></image>
 			</button>
 		</view>
 		<view class="separator"></view> <!-- 用来分隔的容器 -->
-		<view class="nick-name">
-			<text>昵称</text>
+		<view class="nick-name user-attr">
+			<label>昵称</label>
 			<input class="nick-name-input" type="nickname" placeholder="请输入昵称" :value="userInfo.nickName"
 				@blur="bindBlur" @input="bindInput" />
+		</view>
+		<view class="location user-attr">
+			<text>场上位置</text>
+			<uni-data-select v-model="userInfo.positionValue" :localdata="position_info"
+				@change="positionChange"></uni-data-select>
 		</view>
 
 		<view class="btn">
@@ -18,7 +24,8 @@
 		</view>
 
 		<uni-popup ref="message" type="message">
-			<uni-popup-message type="success" message="用户信息保存成功" :duration="2000"></uni-popup-message>
+			<uni-popup-message :type="messageData.type" :message="messageData.message"
+				:duration="messageData.duration"></uni-popup-message>
 		</uni-popup>
 
 	</view>
@@ -27,11 +34,26 @@
 <script setup>
 	import {
 		reactive,
-		ref
+		ref,
+		onMounted
 	} from 'vue'
-	
+	import {
+		onShow
+	} from '@dcloudio/uni-app'
+
+	const messageData = reactive({
+		type: "success",
+		message: "保存用户信息成功~~",
+		duration: 2000,
+	})
+
 	const message = ref()
-	
+
+
+	onShow(() => {
+		getUserInfo()
+	})
+
 	const server_info = {
 		url: 'https://oryjk.cn:82',
 		appId: "wxc61da17a97f6eb1b",
@@ -39,11 +61,82 @@
 		isMock: false
 	}
 
+	const position_info = reactive([{
+			value: "守门员",
+			text: "GK"
+		},
+		{
+			value: "中后卫",
+			text: "CB"
+		},
+		{
+			value: "左后卫",
+			text: "LB"
+		},
+		{
+			value: "右后卫",
+			text: "RB"
+		},
+		{
+			value: "中前卫",
+			text: "CMF"
+		},
+		{
+			value: "左前卫",
+			text: "LMF"
+		},
+		{
+			value: "右前卫",
+			text: "RMF"
+		},
+		{
+			value: "后腰",
+			text: "DMF"
+		},
+		{
+			value: "前腰",
+			text: "AMF"
+		},
+		{
+			value: "左边锋",
+			text: "LWF"
+		},
+		{
+			value: "右边锋",
+			text: "RWF"
+		},
+		{
+			value: "中锋",
+			text: "CF"
+		},
+		{
+			value: "前锋",
+			text: "ST"
+		},
+		{
+			value: "影锋",
+			text: "SS"
+		}
+	])
+
+
 
 	const userInfo = reactive({
-		avatarUrl: "",
+		code: "",
+		cloudID: "",
+		encryptedData: "",
+		errMsg: "",
+		iv: "",
+		rawData: "",
+		signature: "",
+		userInfo: "",
+		logined: false,
+		openId: "",
+		session_key: "",
 		nickName: "",
-		openId: ""
+		avatarUrl: "",
+		avatarValue: "",
+		positionValue: ""
 	})
 
 	function onChooseAvatar(e) {
@@ -51,7 +144,13 @@
 			avatarUrl
 		} = e.detail
 		userInfo.avatarUrl = avatarUrl
+		userInfo.avatarValue = avatarUrl
 		uni.setStorageSync('avatarUrl', avatarUrl)
+		uni.setStorageSync('avatarValue', avatarUrl)
+	}
+
+	function positionChange(e) {
+		console.log("e:", e)
 	}
 
 	function bindBlur(e) {
@@ -63,6 +162,16 @@
 	}
 
 	function saveUserInfo() {
+		if (userInfo.avatarUrl == "" || userInfo.nickName == "") {
+			messageData.type = "error"
+			messageData.message = "请绑定用户头像和昵称！！！"
+			messageData.duration = 6000
+			message.value.open()
+			return
+		}
+		uni.showLoading({
+			title: '保存数据中'
+		})
 		uni.getUserProfile({
 			provider: 'weixin',
 			desc: '获取你的昵称、头像、地区级性别',
@@ -82,31 +191,44 @@
 						console.log(res)
 						userInfo.code = res.code
 						userInfo.logined = true
-						uni.request({
-							url: 'https://api.weixin.qq.com/sns/jscode2session',
-							data: {
+
+						postRequest("/api/user/login", {
 								appid: server_info.appId,
 								secret: server_info.secret,
 								js_code: res.code, // wx.login登录code
 								grant_type: 'authorization_code' // 固定赋值
-							},
-							success(res) {
+							}, (res) => {
 								console.log('res', res)
-								userInfo.openId = res.data.openid
-								userInfo.session_key = res.data.session_key
+								userInfo.openId = res.openid
+								userInfo.session_key = res.session_key
 								console.log(userInfo)
-
 								postRequest("/api/user/info", userInfo, (data) => {
 										uni.setStorageSync("openId", userInfo.openId)
-										uni.setStorageSync("avatarUrl",userInfo.avatarUrl)
-										uni.setStorageSync("nickName",userInfo.nickName)
+										uni.setStorageSync("avatarUrl", userInfo
+											.avatarUrl)
+										uni.setStorageSync("nickName", userInfo
+											.nickName)
+										uni.setStorageSync("userInfo", userInfo)
+
+										uni.uploadFile({
+											url: server_info.url +
+												'/api/user/upload/' + userInfo
+												.openId,
+											filePath: userInfo.avatarUrl,
+											name: "file",
+											formData: {
+												'user': 'test'
+											},
+											success: (res) => {
+												console.log(res.data)
+											}
+										})
+										uni.hideLoading()
+										message.value.open()
 									},
 									'POST')
-
-								message.value.open()
-								
-							}
-						})
+							},
+							'POST')
 					}
 				})
 
@@ -121,9 +243,9 @@
 		const openId = uni.getStorageSync("openId")
 		if (openId != "") {
 			console.log("不用登录了，缓存中有信息")
-			userInfo.openId=uni.getStorageSync("openId")
-			userInfo.avatarUrl=uni.getStorageSync("avatarUrl")
-			userInfo.nickName=uni.getStorageSync("nickName")
+			userInfo.openId = uni.getStorageSync("openId")
+			userInfo.avatarUrl = uni.getStorageSync("avatarUrl")
+			userInfo.nickName = uni.getStorageSync("nickName")
 			postRequest(`/api/user/info/${userInfo.openId}`, "", processUserInfo,
 				'GET')
 		} else {
@@ -131,10 +253,10 @@
 		}
 
 	}
-	getUserInfo()
 
 	function processUserInfo(data) {
 		console.log(data)
+		userInfo.avatarValue = 'data:image/jpeg;base64,' + data.avatarUrl;
 	}
 
 	function postRequest(path, payload, callBack, method) {
@@ -178,7 +300,7 @@
 		}
 
 
-		.nick-name {
+		.user-attr {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -186,11 +308,11 @@
 			margin-top: 50rpx;
 
 			text {
-				width: 20%;
+				width: 30%;
 			}
 
 			input {
-				width: 80%;
+				width: 70%;
 			}
 
 		}
