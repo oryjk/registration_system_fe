@@ -2,20 +2,19 @@
 const common_vendor = require("../../common/vendor.js");
 if (!Array) {
   const _easycom_uni_title2 = common_vendor.resolveComponent("uni-title");
-  const _easycom_uni_section2 = common_vendor.resolveComponent("uni-section");
   const _easycom_uni_popup_dialog2 = common_vendor.resolveComponent("uni-popup-dialog");
   const _easycom_uni_popup2 = common_vendor.resolveComponent("uni-popup");
   const _easycom_uni_popup_message2 = common_vendor.resolveComponent("uni-popup-message");
-  (_easycom_uni_title2 + _easycom_uni_section2 + _easycom_uni_popup_dialog2 + _easycom_uni_popup2 + _easycom_uni_popup_message2)();
+  (_easycom_uni_title2 + _easycom_uni_popup_dialog2 + _easycom_uni_popup2 + _easycom_uni_popup_message2)();
 }
 const _easycom_uni_title = () => "../../uni_modules/uni-title/components/uni-title/uni-title.js";
-const _easycom_uni_section = () => "../../uni_modules/uni-section/components/uni-section/uni-section.js";
 const _easycom_uni_popup_dialog = () => "../../uni_modules/uni-popup/components/uni-popup-dialog/uni-popup-dialog.js";
 const _easycom_uni_popup = () => "../../uni_modules/uni-popup/components/uni-popup/uni-popup.js";
 const _easycom_uni_popup_message = () => "../../uni_modules/uni-popup/components/uni-popup-message/uni-popup-message.js";
 if (!Math) {
-  (_easycom_uni_title + _easycom_uni_section + _easycom_uni_popup_dialog + _easycom_uni_popup + _easycom_uni_popup_message)();
+  (_easycom_uni_title + regisInfo + _easycom_uni_popup_dialog + _easycom_uni_popup + _easycom_uni_popup_message)();
 }
+const regisInfo = () => "../components/regisInfo.js";
 const _sfc_main = {
   __name: "index",
   setup(__props) {
@@ -44,7 +43,10 @@ const _sfc_main = {
       "matchRegistStatus": false,
       "agreeItems": [],
       "disAgreeItems": [],
-      "nullAgreeItems": []
+      "nullAgreeItems": [],
+      "opposing": "",
+      "color": "",
+      "opposingColor": ""
     });
     const user_info = common_vendor.reactive({
       code: "",
@@ -67,8 +69,27 @@ const _sfc_main = {
     const message = common_vendor.ref();
     common_vendor.ref();
     common_vendor.ref();
+    const myTeamStyle = common_vendor.reactive({
+      "text-decoration": `underline ${match_info.color}`,
+      "text-decoration-thickness": "20rpx",
+      "text-decoration-style": "solid",
+      "color": "white"
+    });
+    const opposingTeamStyle = common_vendor.reactive({
+      "text-decoration": `underline ${match_info.opposingColor}`,
+      "text-decoration-thickness": "20rpx",
+      "text-decoration-style": "solid",
+      "color": "white"
+    });
     common_vendor.onMounted(() => {
-      getActivity();
+      getActivityWithPromoise().then((result) => {
+        console.log(result);
+        return getActivityInfo(result.id);
+      }).then((result) => {
+        console.log(result);
+        myTeamStyle["text-decoration"] = `underline ${match_info.color}`;
+        opposingTeamStyle["text-decoration"] = `underline ${match_info.opposingColor}`;
+      });
     });
     common_vendor.onShow(() => {
       getActivity();
@@ -86,6 +107,25 @@ const _sfc_main = {
       user_info.avatarValue = userInfo.avatarValue;
       user_info.logined = userInfo.logined;
     });
+    function getAllUser() {
+      postRequest(
+        `/api/user/info/all`,
+        "",
+        processAllUser,
+        "GET"
+      );
+    }
+    function processAllUser(data) {
+      let disAgreeIds = match_info.disAgreeItems.map((user) => user.openId);
+      let agreeIds = match_info.agreeItems.map((user) => user.openId);
+      let nullUsers = data.filter((user) => !(disAgreeIds.includes(user.openId) || agreeIds.includes(user.openId)));
+      let nullAgreeItems = [];
+      nullUsers.forEach(function(current) {
+        current.avatarValue = "data:image/jpeg;base64," + current.avatarUrl;
+        nullAgreeItems.push(current);
+      });
+      match_info.nullAgreeItems = nullAgreeItems;
+    }
     function checkouSubmitBtnStatus() {
       let now = /* @__PURE__ */ new Date();
       const cutOffTime = new Date(match_info.cutOffTime.replace(/-/g, "/"));
@@ -100,7 +140,6 @@ const _sfc_main = {
         return true;
       }
     }
-    getActivity();
     function login() {
       {
         common_vendor.index.switchTab({
@@ -115,6 +154,28 @@ const _sfc_main = {
         processActivity,
         "GET"
       );
+    }
+    function getActivityWithPromoise() {
+      return asyncRequest(
+        `/api/activity/processing`,
+        "",
+        processActivity,
+        "GET"
+      );
+    }
+    function getActivityInfo(activityId) {
+      return asyncRequest(
+        `/api/activity-info/${activityId}`,
+        "",
+        processActivityInfo,
+        "GET"
+      );
+    }
+    function processActivityInfo(data) {
+      match_info.opposing = data.opposing;
+      match_info.color = data.color;
+      match_info.opposingColor = data.opposingColor;
+      return data;
     }
     function processActivity(data) {
       match_info.name = data.name;
@@ -139,7 +200,9 @@ const _sfc_main = {
       });
       match_info.agreeItems = group.agree;
       match_info.disAgreeItems = group.disAgree;
+      getAllUser();
       setInterval(checkouSubmitBtnStatus, 1e3);
+      return data;
     }
     function inputDialogToggle(registStatus) {
       if (registStatus == match_info.ok) {
@@ -205,6 +268,21 @@ const _sfc_main = {
         }
       });
     }
+    function asyncRequest(path, payload, callBack, method) {
+      return new Promise((resolve, reject) => {
+        common_vendor.index.request({
+          url: server_info.url + path,
+          data: payload,
+          method,
+          header: {
+            "content-type": "application/json"
+          },
+          success: (res) => {
+            resolve(callBack(res.data));
+          }
+        });
+      });
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.p({
@@ -213,101 +291,64 @@ const _sfc_main = {
           title: "比赛时间: " + match_info.date,
           align: "center"
         }),
-        b: common_vendor.p({
+        b: common_vendor.s(myTeamStyle),
+        c: common_vendor.t(match_info.opposing),
+        d: common_vendor.s(opposingTeamStyle),
+        e: common_vendor.p({
           color: "#999DA2",
           type: "h4",
           title: "比赛地点: " + match_info.addr,
           align: "center"
         }),
-        c: common_vendor.p({
+        f: common_vendor.p({
           color: "#999DA2",
           type: "h4",
           title: "报名截止时间: " + match_info.cutOffTime,
           align: "center"
         }),
-        d: common_vendor.f(match_info.agreeItems, (item, index, i0) => {
-          return {
-            a: item.avatarValue,
-            b: common_vendor.t(item.nickName),
-            c: item.nickName
-          };
-        }),
-        e: common_vendor.p({
-          title: "报名参加",
-          type: "line",
-          padding: true,
-          ["title-color"]: "#3A404A",
-          ["sub-title"]: match_info.agreeItems.length + "人"
-        }),
-        f: common_vendor.f(match_info.disAgreeItems, (item, index, i0) => {
-          return {
-            a: item.avatarValue,
-            b: common_vendor.t(item.nickName),
-            c: item.nickName
-          };
-        }),
         g: common_vendor.p({
-          title: "无法参加",
-          type: "line",
-          padding: true,
-          ["title-color"]: "#3A404A",
-          ["sub-title"]: match_info.disAgreeItems.length + "人"
+          match_info
         }),
-        h: common_vendor.f(match_info.nullAgreeItems, (item, index, i0) => {
-          return {
-            a: item.avatarValue,
-            b: common_vendor.t(item.nickName),
-            c: item.nickName
-          };
-        }),
-        i: common_vendor.p({
-          title: "未接龙人员",
-          type: "line",
-          padding: true,
-          ["title-color"]: "#3A404A",
-          ["sub-title"]: match_info.nullAgreeItems.length + "人"
-        }),
-        j: !user_info.logined
+        h: !user_info.logined
       }, !user_info.logined ? {
-        k: common_vendor.o(login)
+        i: common_vendor.o(login)
       } : {}, {
-        l: !user_info.openId == ""
+        j: !user_info.openId == ""
       }, !user_info.openId == "" ? {
-        m: common_vendor.t(match_info.msgStatus),
-        n: match_info.btn,
-        o: match_info.matchRegistStatus,
-        p: common_vendor.o(($event) => inputDialogToggle(match_info.registStatus))
+        k: common_vendor.t(match_info.msgStatus),
+        l: match_info.btn,
+        m: match_info.matchRegistStatus,
+        n: common_vendor.o(($event) => inputDialogToggle(match_info.registStatus))
       } : {}, {
-        q: common_vendor.o(dialogConfirm),
-        r: common_vendor.o(dialogClose),
-        s: common_vendor.p({
+        o: common_vendor.o(dialogConfirm),
+        p: common_vendor.o(dialogClose),
+        q: common_vendor.p({
           type: "success",
           cancelText: "不参加",
           confirmText: "参加",
           title: match_info.notice,
           content: match_info.content
         }),
-        t: common_vendor.sr(alertDialog, "7723569a-6", {
+        r: common_vendor.sr(alertDialog, "7723569a-4", {
           "k": "alertDialog"
         }),
-        v: common_vendor.p({
+        s: common_vendor.p({
           type: "dialog"
         }),
-        w: common_vendor.p({
+        t: common_vendor.p({
           type: match_info.msgType,
           message: match_info.messageText,
           duration: 2e3
         }),
-        x: common_vendor.sr(message, "7723569a-8", {
+        v: common_vendor.sr(message, "7723569a-6", {
           "k": "message"
         }),
-        y: common_vendor.p({
+        w: common_vendor.p({
           type: "message"
         })
       });
     };
   }
 };
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "/Users/carlwang/Documents/HBuilderProjects/registration_system_fe/pages/index/index.vue"]]);
 _sfc_main.__runtimeHooks = 6;
-wx.createPage(MiniProgramPage);
+wx.createPage(_sfc_main);

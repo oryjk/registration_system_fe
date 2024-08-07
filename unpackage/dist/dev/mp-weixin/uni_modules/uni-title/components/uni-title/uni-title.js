@@ -92,5 +92,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     d: $options.textAlign
   };
 }
-const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "/Users/carlwang/Documents/HBuilderProjects/registration_system_fe/uni_modules/uni-title/components/uni-title/uni-title.vue"]]);
+const Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);
 wx.createComponent(Component);

@@ -7,17 +7,15 @@
 			</view>
 			<view class="team-info">
 				<view class="team">
-					<text class="team1-name">东安洺悦联队</text>
+					<text class="team1-name" :style="myTeamStyle">东安洺悦联队</text>
 				</view>
 				<view class="team">
 					<text>VS</text>
 				</view>
 				<view class="team">
-					<text class="team2-name">鼎山寨</text>
+					<text class="team2-name" :style="opposingTeamStyle">{{match_info.opposing}}</text>
 				</view>
 			</view>
-			<!-- <uni-title color="#FFFFFF" class="match-info-text" type="h1" :title="match_info.name"
-				align="center"></uni-title> -->
 			<view class="addr">
 				<uni-title color="#999DA2" class="match-info-text" type="h4" :title="'比赛地点: ' +match_info.addr"
 					align="center"></uni-title>
@@ -28,44 +26,7 @@
 					align="center"></uni-title>
 			</view>
 		</view>
-		<view class="view view-50 regis-info">
-			<scroll-view scroll-y="true" class="user-container-scroll">
-				<uni-section title="报名参加" type="line" padding title-color="#3A404A"
-					:sub-title="match_info.agreeItems.length+'人'">
-					<view class="user-container">
-						<view class="image-name-container" v-for="(item,index) in match_info.agreeItems"
-							:key="item.nickName">
-							<image class="avatar" mode="aspectFit" :src="item.avatarValue"></image>
-							<text>{{item.nickName}}</text>
-						</view>
-
-					</view>
-				</uni-section>
-
-				<uni-section title="无法参加" type="line" padding title-color="#3A404A"
-					:sub-title="match_info.disAgreeItems.length+'人'">
-					<view class="user-container">
-						<view class="image-name-container" v-for="(item,index) in match_info.disAgreeItems"
-							:key="item.nickName">
-							<image class="avatar" mode="aspectFit" :src="item.avatarValue"></image>
-							<text>{{item.nickName}}</text>
-						</view>
-					</view>
-				</uni-section>
-
-				<uni-section title="未接龙人员" type="line" padding title-color="#3A404A"
-					:sub-title="match_info.nullAgreeItems.length+'人'">
-					<view class="user-container">
-						<view class="image-name-container" v-for="(item,index) in match_info.nullAgreeItems"
-							:key="item.nickName">
-							<image class="avatar" mode="aspectFit" :src="item.avatarValue"></image>
-							<text>{{item.nickName}}</text>
-						</view>
-					</view>
-
-				</uni-section>
-			</scroll-view>
-		</view>
+		<regisInfo :match_info="match_info"></regisInfo>
 
 		<view class="btn-container view view-20">
 			<button class="submit-btn weixin-login" ref="submitLoginBtn" @click="login"
@@ -102,6 +63,8 @@
 		onShow
 	} from '@dcloudio/uni-app'
 
+	import regisInfo from '../components/regisInfo.vue'
+
 
 	const config = {
 		isMock: false
@@ -133,9 +96,10 @@
 		"matchRegistStatus": false,
 		"agreeItems": [],
 		"disAgreeItems": [],
-		"nullAgreeItems": []
-
-
+		"nullAgreeItems": [],
+		"opposing": '',
+		"color": '',
+		"opposingColor": ''
 	})
 
 	const user_info = reactive({
@@ -161,8 +125,32 @@
 	const submitLoginBtn = ref()
 	const submitBtn = ref()
 
+	const myTeamStyle = reactive({
+		'text-decoration': `underline ${match_info.color}`,
+		'text-decoration-thickness': '20rpx',
+		'text-decoration-style': 'solid',
+		'color': 'white'
+	})
+	const opposingTeamStyle = reactive({
+		'text-decoration': `underline ${match_info.opposingColor}`,
+		'text-decoration-thickness': '20rpx',
+		'text-decoration-style': 'solid',
+		'color': 'white'
+	})
+
+
 	onMounted(() => {
-		getActivity()
+		// getActivity()
+		getActivityWithPromoise().then(result => {
+			console.log(result)
+			return getActivityInfo(result.id)
+		}).then(result => {
+			console.log(result)
+			myTeamStyle['text-decoration'] = `underline ${match_info.color}`
+			
+			opposingTeamStyle['text-decoration'] = `underline ${match_info.opposingColor}`
+			
+		})
 	})
 
 
@@ -182,6 +170,26 @@
 		user_info.avatarValue = userInfo.avatarValue
 		user_info.logined = userInfo.logined
 	})
+
+	function getAllUser() {
+		postRequest(`/api/user/info/all`, "", processAllUser,
+			'GET')
+	}
+
+	function processAllUser(data) {
+		let disAgreeIds = match_info.disAgreeItems.map(user => user.openId)
+		let agreeIds = match_info.agreeItems.map(user => user.openId)
+		let nullUsers = data.filter(user => !(disAgreeIds.includes(user.openId) || agreeIds.includes(user.openId)))
+		let nullAgreeItems = []
+
+		nullUsers.forEach(function(current) {
+
+			current.avatarValue = 'data:image/jpeg;base64,' + current.avatarUrl
+
+			nullAgreeItems.push(current)
+		})
+		match_info.nullAgreeItems = nullAgreeItems
+	}
 
 	function onShareAppMessage() {
 		return {
@@ -222,8 +230,6 @@
 	// }
 	// checkAuth()
 
-	getActivity()
-
 	function login() {
 
 		if (config.isMock) {
@@ -244,6 +250,23 @@
 	function getActivity() {
 		postRequest(`/api/activity/processing`, "", processActivity,
 			'GET')
+	}
+
+	function getActivityWithPromoise() {
+		return asyncRequest(`/api/activity/processing`, "", processActivity,
+			'GET')
+	}
+
+	function getActivityInfo(activityId) {
+		return asyncRequest(`/api/activity-info/${activityId}`, "", processActivityInfo,
+			'GET')
+	}
+
+	function processActivityInfo(data) {
+		match_info.opposing = data.opposing
+		match_info.color = data.color
+		match_info.opposingColor = data.opposingColor
+		return data
 	}
 
 
@@ -275,7 +298,11 @@
 		match_info.agreeItems = group.agree
 		match_info.disAgreeItems = group.disAgree
 
+		getAllUser()
+
 		let intervalId = setInterval(checkouSubmitBtnStatus, 1000);
+
+		return data
 
 	}
 
@@ -300,7 +327,7 @@
 			match_info.registStatus = 1
 			match_info.msgStatus = "已报名"
 			match_info.btn = "default"
-		} else if (data.stand == "PENDING") {
+		} else if (data.stand == "NOT_PARTICIPATE") {
 			match_info.registStatus = 2
 			match_info.msgStatus = "无法参加"
 			match_info.btn = "warn"
@@ -379,6 +406,22 @@
 			}
 		});
 	}
+
+	function asyncRequest(path, payload, callBack, method) {
+		return new Promise((resolve, reject) => {
+			uni.request({
+				url: server_info.url + path,
+				data: payload,
+				method: method,
+				header: {
+					'content-type': 'application/json'
+				},
+				success: (res) => {
+					resolve(callBack(res.data))
+				}
+			});
+		})
+	}
 </script>
 
 <style lang="scss">
@@ -413,19 +456,6 @@
 					display: flex;
 					flex-direction: column;
 					color: #eeeeee;
-
-
-					.team1-name {
-						text-decoration: underline white;
-						text-decoration-thickness: 20rpx;
-						text-decoration-style: solid;
-					}
-
-					.team2-name {
-						text-decoration: underline steelblue;
-						text-decoration-thickness: 20rpx;
-						text-decoration-style: solid;
-					}
 				}
 			}
 

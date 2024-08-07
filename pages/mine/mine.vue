@@ -1,7 +1,6 @@
 <template>
 	<view class="container">
-		<uni-data-select v-model="userInfo.positionValue" :localdata="position_info"
-			@change="positionChange"></uni-data-select>
+		
 		<view class="avatar-container">
 			<button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
 				<image class="avatar" :src="userInfo.avatarValue" mode="aspectFit"></image>
@@ -12,11 +11,6 @@
 			<label>昵称</label>
 			<input class="nick-name-input" type="nickname" placeholder="请输入昵称" :value="userInfo.nickName"
 				@blur="bindBlur" @input="bindInput" />
-		</view>
-		<view class="location user-attr">
-			<text>场上位置</text>
-			<uni-data-select v-model="userInfo.positionValue" :localdata="position_info"
-				@change="positionChange"></uni-data-select>
 		</view>
 
 		<view class="btn">
@@ -56,8 +50,6 @@
 
 	const server_info = {
 		url: 'https://oryjk.cn:82',
-		appId: "wxc61da17a97f6eb1b",
-		secret: "5d07cc90ad39ba23cbedf0b5e4bc8127",
 		isMock: false
 	}
 
@@ -193,8 +185,6 @@
 						userInfo.logined = true
 
 						postRequest("/api/user/login", {
-								appid: server_info.appId,
-								secret: server_info.secret,
 								js_code: res.code, // wx.login登录code
 								grant_type: 'authorization_code' // 固定赋值
 							}, (res) => {

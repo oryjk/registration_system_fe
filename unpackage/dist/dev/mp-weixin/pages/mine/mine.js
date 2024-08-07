@@ -1,10 +1,9 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 if (!Array) {
-  const _component_uni_data_select = common_vendor.resolveComponent("uni-data-select");
   const _easycom_uni_popup_message2 = common_vendor.resolveComponent("uni-popup-message");
   const _easycom_uni_popup2 = common_vendor.resolveComponent("uni-popup");
-  (_component_uni_data_select + _easycom_uni_popup_message2 + _easycom_uni_popup2)();
+  (_easycom_uni_popup_message2 + _easycom_uni_popup2)();
 }
 const _easycom_uni_popup_message = () => "../../uni_modules/uni-popup/components/uni-popup-message/uni-popup-message.js";
 const _easycom_uni_popup = () => "../../uni_modules/uni-popup/components/uni-popup/uni-popup.js";
@@ -25,11 +24,9 @@ const _sfc_main = {
     });
     const server_info = {
       url: "https://oryjk.cn:82",
-      appId: "wxc61da17a97f6eb1b",
-      secret: "5d07cc90ad39ba23cbedf0b5e4bc8127",
       isMock: false
     };
-    const position_info = common_vendor.reactive([
+    common_vendor.reactive([
       {
         value: "守门员",
         text: "GK"
@@ -113,9 +110,6 @@ const _sfc_main = {
       common_vendor.index.setStorageSync("avatarUrl", avatarUrl);
       common_vendor.index.setStorageSync("avatarValue", avatarUrl);
     }
-    function positionChange(e) {
-      console.log("e:", e);
-    }
     function bindBlur(e) {
       userInfo.nickName = e.detail.value;
     }
@@ -154,8 +148,6 @@ const _sfc_main = {
               postRequest(
                 "/api/user/login",
                 {
-                  appid: server_info.appId,
-                  secret: server_info.secret,
                   js_code: res2.code,
                   // wx.login登录code
                   grant_type: "authorization_code"
@@ -237,38 +229,25 @@ const _sfc_main = {
     }
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.o(positionChange),
-        b: common_vendor.o(($event) => userInfo.positionValue = $event),
-        c: common_vendor.p({
-          localdata: position_info,
-          modelValue: userInfo.positionValue
-        }),
-        d: userInfo.avatarValue,
-        e: common_vendor.o(onChooseAvatar),
-        f: userInfo.nickName,
-        g: common_vendor.o(bindBlur),
-        h: common_vendor.o(bindInput),
-        i: common_vendor.o(positionChange),
-        j: common_vendor.o(($event) => userInfo.positionValue = $event),
-        k: common_vendor.p({
-          localdata: position_info,
-          modelValue: userInfo.positionValue
-        }),
-        l: common_vendor.o(saveUserInfo),
-        m: common_vendor.p({
+        a: userInfo.avatarValue,
+        b: common_vendor.o(onChooseAvatar),
+        c: userInfo.nickName,
+        d: common_vendor.o(bindBlur),
+        e: common_vendor.o(bindInput),
+        f: common_vendor.o(saveUserInfo),
+        g: common_vendor.p({
           type: messageData.type,
           message: messageData.message,
           duration: messageData.duration
         }),
-        n: common_vendor.sr(message, "a806c726-2", {
+        h: common_vendor.sr(message, "a806c726-0", {
           "k": "message"
         }),
-        o: common_vendor.p({
+        i: common_vendor.p({
           type: "message"
         })
       };
     };
   }
 };
-const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "/Users/carlwang/Documents/HBuilderProjects/registration_system_fe/pages/mine/mine.vue"]]);
-wx.createPage(MiniProgramPage);
+wx.createPage(_sfc_main);

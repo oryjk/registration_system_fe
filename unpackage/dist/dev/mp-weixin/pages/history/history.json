@@ -1,4 +1,8 @@
 {
   "navigationBarTitleText": "比赛历史",
-  "usingComponents": {}
+  "usingComponents": {
+    "uni-data-select": "../../uni_modules/uni-data-select/components/uni-data-select/uni-data-select",
+    "uni-section": "../../uni_modules/uni-section/components/uni-section/uni-section",
+    "regis-info": "../components/regisInfo"
+  }
 }

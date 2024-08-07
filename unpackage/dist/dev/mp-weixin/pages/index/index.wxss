@@ -53,20 +53,6 @@
   flex-direction: column;
   color: #eeeeee;
 }
-.container .match-info .team-info .team .team1-name {
-  -webkit-text-decoration: underline white;
-          text-decoration: underline white;
-  text-decoration-thickness: 20rpx;
-  -webkit-text-decoration-style: solid;
-          text-decoration-style: solid;
-}
-.container .match-info .team-info .team .team2-name {
-  -webkit-text-decoration: underline steelblue;
-          text-decoration: underline steelblue;
-  text-decoration-thickness: 20rpx;
-  -webkit-text-decoration-style: solid;
-          text-decoration-style: solid;
-}
 .container .match-info .addr {
   margin-top: 25rpx;
 }

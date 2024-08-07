@@ -23,28 +23,42 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.container {
-  width: 100%;
-  min-height: 100%;
+.regis-info {
+  margin-top: 50%;
+  margin-bottom: 20%;
+  height: 100%;
+  flex: 1;
+  overflow-y: auto;
+  z-index: 2;
 }
-.container .fixed-content {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-.container .fixed-content .uni-section-content {
+.regis-info .user-container {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.regis-info .user-container .image-name-container {
+  display: flex;
+  /* 启用Flexbox */
   flex-direction: column;
+  /* 使子元素垂直排列，即图片在上，文本在下 */
+  align-items: center;
+  /* 使子元素在交叉轴（此处为水平方向）上居中 */
+  justify-content: center;
+  /* 使子元素在主轴（此处为垂直方向）上居中（如果不需要垂直居中可省略） */
+  margin-right: 3px;
+  /* 示例：使容器水平居中 */
+  width: calc(20% - 3px);
 }
-.container .fixed-content .uni-section-content .fee-text {
-  margin-left: 20rpx;
+.regis-info .user-container .image-name-container .avatar {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: #eeeeee;
+  margin: 3px;
 }
-.container .select-cus {
-  z-index: 999;
-}
-.container .footer {
-  position: -webkit-sticky;
-  position: sticky;
-  bottom: 0;
-  height: 80px;
+.regis-info .user-container .image-name-container text {
+  width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
