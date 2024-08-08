@@ -27,6 +27,7 @@ const _sfc_main = {
     common_vendor.onShow(() => {
       getAllActivityInfo().then((result) => {
         console.log(result);
+        select_info.range = [];
         result.forEach(function(value) {
           let date = formatDate(value.holdingDate);
           select_info.range.push({

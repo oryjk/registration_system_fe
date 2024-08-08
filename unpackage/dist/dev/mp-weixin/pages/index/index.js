@@ -329,7 +329,7 @@ const _sfc_main = {
           title: match_info.notice,
           content: match_info.content
         }),
-        r: common_vendor.sr(alertDialog, "7723569a-4", {
+        r: common_vendor.sr(alertDialog, "c9d93008-4", {
           "k": "alertDialog"
         }),
         s: common_vendor.p({
@@ -340,7 +340,7 @@ const _sfc_main = {
           message: match_info.messageText,
           duration: 2e3
         }),
-        v: common_vendor.sr(message, "7723569a-6", {
+        v: common_vendor.sr(message, "c9d93008-6", {
           "k": "message"
         }),
         w: common_vendor.p({

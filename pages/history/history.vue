@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="fixed-content">
 			<uni-section title="历史报名列表" type="line">
-				<uni-data-select v-model="select_info.value" :localdata="select_info.range"
+				<uni-data-select class="history-select"  v-model="select_info.value" :localdata="select_info.range"
 					@change="change"></uni-data-select>
 			</uni-section>
 			<uni-section class="order-info" title="费用" type="line">
@@ -11,8 +11,12 @@
 			</uni-section>
 		</view>
 
+
 		<!-- {{range}} -->
-		<regisInfo :match_info="match_info"></regisInfo>
+		<view class="regis-info">
+			<regisInfo :match_info="match_info"></regisInfo>
+		</view>
+
 	</view>
 </template>
 
@@ -41,14 +45,13 @@
 		value: "0",
 		range: []
 	})
-
-
+	
 	onShow(() => {
 		getAllActivityInfo().then(result => {
 			console.log(result)
+			select_info.range=[]
 			result.forEach(function(value) {
 				let date = formatDate(value.holdingDate)
-
 				select_info.range.push({
 					"value": value.id,
 					"text": date + value.name
@@ -91,15 +94,15 @@
 		})
 
 		getActivityOrderById(e).then(data => {
-			
+
 			match_info.order.fee = data.fee
 			match_info.order.total = data.total
 			match_info.order.desc = data.desc
-		}).catch(error=>{
+		}).catch(error => {
 			match_info.order.fee = 998
 			match_info.order.total = 998
 			match_info.order.desc = "杰哥还在找双胞胎算账，暂时不入账~~"
-			console.log(error+"!!!!!!!!!!!!!!")
+			console.log(error + "!!!!!!!!!!!!!!")
 		})
 	}
 
@@ -185,8 +188,15 @@
 			position: fixed;
 			top: 0;
 			width: 100%;
+			z-index: 999;
 			// display: flex;
 			// overflow: hidden;
+			overflow: visible;
+
+			.history-select {
+				z-index: 999;
+				// height: 30rpx;
+			}
 
 			.uni-section-content {
 				display: flex;
@@ -197,11 +207,6 @@
 				}
 			}
 
-		}
-
-
-		.select-cus {
-			z-index: 999;
 		}
 
 		.footer {

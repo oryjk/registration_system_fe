@@ -31,6 +31,11 @@
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 999;
+  overflow: visible;
+}
+.container .fixed-content .history-select {
+  z-index: 999;
 }
 .container .fixed-content .uni-section-content {
   display: flex;
@@ -38,9 +43,6 @@
 }
 .container .fixed-content .uni-section-content .fee-text {
   margin-left: 20rpx;
-}
-.container .select-cus {
-  z-index: 999;
 }
 .container .footer {
   position: -webkit-sticky;

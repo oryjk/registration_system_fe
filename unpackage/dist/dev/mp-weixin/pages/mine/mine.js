@@ -240,7 +240,7 @@ const _sfc_main = {
           message: messageData.message,
           duration: messageData.duration
         }),
-        h: common_vendor.sr(message, "a806c726-0", {
+        h: common_vendor.sr(message, "422fedf6-0", {
           "k": "message"
         }),
         i: common_vendor.p({
