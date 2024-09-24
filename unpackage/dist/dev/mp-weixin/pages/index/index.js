@@ -96,7 +96,6 @@ const _sfc_main = {
       const userInfo = common_vendor.index.getStorageSync("userInfo");
       user_info.code = userInfo.code;
       user_info.cloudID = userInfo.cloudID;
-      user_info.cloudID = userInfo.cloudID;
       user_info.iv = userInfo.iv;
       user_info.signature = userInfo.signature;
       user_info.userInfo = userInfo.userInfo;
@@ -329,7 +328,7 @@ const _sfc_main = {
           title: match_info.notice,
           content: match_info.content
         }),
-        r: common_vendor.sr(alertDialog, "c9d93008-4", {
+        r: common_vendor.sr(alertDialog, "298bcdb9-4", {
           "k": "alertDialog"
         }),
         s: common_vendor.p({
@@ -340,7 +339,7 @@ const _sfc_main = {
           message: match_info.messageText,
           duration: 2e3
         }),
-        v: common_vendor.sr(message, "c9d93008-6", {
+        v: common_vendor.sr(message, "298bcdb9-6", {
           "k": "message"
         }),
         w: common_vendor.p({

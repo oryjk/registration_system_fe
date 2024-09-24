@@ -6,10 +6,11 @@ function useShareMethods() {
     appId: "wxc61da17a97f6eb1b",
     secret: "5d07cc90ad39ba23cbedf0b5e4bc8127"
   };
-  const asyncRequest = (path, payload, method) => {
+  const asyncRequest = (path, payload, method, host) => {
     return new Promise((resolve, reject) => {
+      const hostUrl = host === void 0 ? server_info.url : host;
       common_vendor.index.request({
-        url: server_info.url + path,
+        url: hostUrl + path,
         data: payload,
         method,
         header: {

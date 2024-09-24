@@ -159,7 +159,6 @@
 		const userInfo = uni.getStorageSync("userInfo")
 		user_info.code = userInfo.code
 		user_info.cloudID = userInfo.cloudID
-		user_info.cloudID = userInfo.cloudID
 		user_info.iv = userInfo.iv
 		user_info.signature = userInfo.signature
 		user_info.userInfo = userInfo.userInfo

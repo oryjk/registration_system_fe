@@ -7,15 +7,17 @@ export function useShareMethods() {
 	}
 
 
-	const asyncRequest = (path, payload, method) => {
+	const asyncRequest = (path, payload, method, host) => {
 		return new Promise((resolve, reject) => {
+			const hostUrl = host === undefined ? server_info.url : host;
 			uni.request({
-				url: server_info.url + path,
+				url: hostUrl + path,
 				data: payload,
 				method: method,
 				header: {
 					'content-type': 'application/json'
 				},
+				
 				success: (res) => {
 					if (res.statusCode == 500) {
 						reject('请求服务器报错了: ' + res.data.message)

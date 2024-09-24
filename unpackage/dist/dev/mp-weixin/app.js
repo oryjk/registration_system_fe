@@ -5,6 +5,7 @@ if (!Math) {
   "./pages/index/index.js";
   "./pages/history/history.js";
   "./pages/mine/mine.js";
+  "./pages/views/createMatch/createMatch.js";
 }
 const _sfc_main = {
   onLaunch: function() {
@@ -17,8 +18,6 @@ const _sfc_main = {
     console.log("App Hide");
   }
 };
-require("./vue-devtools/hook.js");
-require("./vue-devtools/backend.js");
 function createApp() {
   const app = common_vendor.createSSRApp(_sfc_main);
   return {

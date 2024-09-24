@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/history/history",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/views/createMatch/createMatch"
   ],
   "window": {
     "navigationBarTextStyle": "black",

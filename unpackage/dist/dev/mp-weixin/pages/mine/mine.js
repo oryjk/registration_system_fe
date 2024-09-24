@@ -26,64 +26,6 @@ const _sfc_main = {
       url: "https://oryjk.cn:82",
       isMock: false
     };
-    common_vendor.reactive([
-      {
-        value: "守门员",
-        text: "GK"
-      },
-      {
-        value: "中后卫",
-        text: "CB"
-      },
-      {
-        value: "左后卫",
-        text: "LB"
-      },
-      {
-        value: "右后卫",
-        text: "RB"
-      },
-      {
-        value: "中前卫",
-        text: "CMF"
-      },
-      {
-        value: "左前卫",
-        text: "LMF"
-      },
-      {
-        value: "右前卫",
-        text: "RMF"
-      },
-      {
-        value: "后腰",
-        text: "DMF"
-      },
-      {
-        value: "前腰",
-        text: "AMF"
-      },
-      {
-        value: "左边锋",
-        text: "LWF"
-      },
-      {
-        value: "右边锋",
-        text: "RWF"
-      },
-      {
-        value: "中锋",
-        text: "CF"
-      },
-      {
-        value: "前锋",
-        text: "ST"
-      },
-      {
-        value: "影锋",
-        text: "SS"
-      }
-    ]);
     const userInfo = common_vendor.reactive({
       code: "",
       cloudID: "",
@@ -99,8 +41,15 @@ const _sfc_main = {
       nickName: "",
       avatarUrl: "",
       avatarValue: "",
-      positionValue: ""
+      positionValue: "",
+      isManager: false
     });
+    function navigateToCreatePage() {
+      common_vendor.index.navigateTo({
+        url: "/pages/views/createMatch/createMatch"
+        // 指定跳转页面的路径
+      });
+    }
     function onChooseAvatar(e) {
       const {
         avatarUrl
@@ -213,6 +162,7 @@ const _sfc_main = {
     function processUserInfo(data) {
       console.log(data);
       userInfo.avatarValue = "data:image/jpeg;base64," + data.avatarUrl;
+      userInfo.isManager = data.isManager;
     }
     function postRequest(path, payload, callBack, method) {
       common_vendor.index.request({
@@ -235,15 +185,17 @@ const _sfc_main = {
         d: common_vendor.o(bindBlur),
         e: common_vendor.o(bindInput),
         f: common_vendor.o(saveUserInfo),
-        g: common_vendor.p({
+        g: common_vendor.o(navigateToCreatePage),
+        h: userInfo.isManager,
+        i: common_vendor.p({
           type: messageData.type,
           message: messageData.message,
           duration: messageData.duration
         }),
-        h: common_vendor.sr(message, "422fedf6-0", {
+        j: common_vendor.sr(message, "46109ef3-0", {
           "k": "message"
         }),
-        i: common_vendor.p({
+        k: common_vendor.p({
           type: "message"
         })
       };

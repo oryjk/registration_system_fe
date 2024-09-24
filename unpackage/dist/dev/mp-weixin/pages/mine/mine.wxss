@@ -56,16 +56,16 @@
 .container .user-attr input {
   width: 70%;
 }
-.container .btn {
+.container .button-container {
   position: fixed;
-  width: 100%;
-  bottom: 0;
-}
-.container .btn .submit-btn {
-  position: absolute;
   bottom: 0;
   width: 100%;
   left: 0;
   padding: 10px 0;
   text-align: center;
+}
+.container .button-container .submit-btn {
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
 }

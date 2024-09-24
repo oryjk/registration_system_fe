@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		
+
 		<view class="avatar-container">
 			<button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
 				<image class="avatar" :src="userInfo.avatarValue" mode="aspectFit"></image>
@@ -13,8 +13,10 @@
 				@blur="bindBlur" @input="bindInput" />
 		</view>
 
-		<view class="btn">
+		<view class="button-container">
 			<button class="submit-btn" type="primary" @click="saveUserInfo">保存用户信息</button>
+			<button class="submit-btn rrrrrr" type="warn" @click="navigateToCreatePage"
+				v-show="userInfo.isManager">创建比赛</button>
 		</view>
 
 		<uni-popup ref="message" type="message">
@@ -53,66 +55,6 @@
 		isMock: false
 	}
 
-	const position_info = reactive([{
-			value: "守门员",
-			text: "GK"
-		},
-		{
-			value: "中后卫",
-			text: "CB"
-		},
-		{
-			value: "左后卫",
-			text: "LB"
-		},
-		{
-			value: "右后卫",
-			text: "RB"
-		},
-		{
-			value: "中前卫",
-			text: "CMF"
-		},
-		{
-			value: "左前卫",
-			text: "LMF"
-		},
-		{
-			value: "右前卫",
-			text: "RMF"
-		},
-		{
-			value: "后腰",
-			text: "DMF"
-		},
-		{
-			value: "前腰",
-			text: "AMF"
-		},
-		{
-			value: "左边锋",
-			text: "LWF"
-		},
-		{
-			value: "右边锋",
-			text: "RWF"
-		},
-		{
-			value: "中锋",
-			text: "CF"
-		},
-		{
-			value: "前锋",
-			text: "ST"
-		},
-		{
-			value: "影锋",
-			text: "SS"
-		}
-	])
-
-
-
 	const userInfo = reactive({
 		code: "",
 		cloudID: "",
@@ -128,8 +70,17 @@
 		nickName: "",
 		avatarUrl: "",
 		avatarValue: "",
-		positionValue: ""
+		positionValue: "",
+		isManager: false
 	})
+
+
+	function navigateToCreatePage() {
+		// 使用 uniapp 的导航方法跳转到新的页面
+		uni.navigateTo({
+			url: '/pages/views/createMatch/createMatch' // 指定跳转页面的路径
+		});
+	}
 
 	function onChooseAvatar(e) {
 		const {
@@ -247,6 +198,7 @@
 	function processUserInfo(data) {
 		console.log(data)
 		userInfo.avatarValue = 'data:image/jpeg;base64,' + data.avatarUrl;
+		userInfo.isManager = data.isManager;
 	}
 
 	function postRequest(path, payload, callBack, method) {
@@ -307,20 +259,21 @@
 
 		}
 
-		.btn {
+		.button-container {
 			position: fixed;
-			width: 100%;
 			bottom: 0;
+			width: 100%;
+			left: 0;
+			padding: 10px 0;
+			text-align: center;
 
 			.submit-btn {
-				position: absolute;
-				bottom: 0;
-				width: 100%;
-				left: 0;
-				padding: 10px 0;
-				text-align: center;
+				margin-bottom: 10px; // 按钮之间的间距
+				padding: 10px 20px;
+				font-size: 16px;
 			}
 		}
+
 
 	}
 </style>
